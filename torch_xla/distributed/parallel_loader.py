@@ -86,6 +86,7 @@ class ParallelLoader(object):
     self._devices = [torch.device(x) for x in devices]
     self._batchdim = batchdim
     self._batches_per_execution = batches_per_execution
+    self._per_device_samples = len(loader) // len(devices)
     self._done = False
     self._queues = dict()
     for device in self._devices:
@@ -114,7 +115,7 @@ class ParallelLoader(object):
     return PerDeviceLoader(self, torch.device(device))
 
   def per_device_samples(self):
-    return len(loader) // len(devices)
+    return self._per_device_samples
 
   def next_item(self, device):
     dqueue = self._queues[device]
